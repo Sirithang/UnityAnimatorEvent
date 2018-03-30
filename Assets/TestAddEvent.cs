@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#define EVENT_SMB
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,8 +15,12 @@ public class TestAddEvent : MonoBehaviour
     {
         _animator = GetComponent<Animator>();
 
-        _animator.AddEventSMB("PutGlass", AnimationEventType.STATE_ENTER, PutGlassEntered);
-        otherAnimator.AddEventSMB("PutGlass", AnimationEventType.STATE_END, OtherPutGlassEntered);
+        _animator.AddEvent("PutGlass", AnimationEventType.STATE_ENTER, PutGlassEntered);
+
+        _animator.AddEvent("Idle", AnimationEventType.STATE_EXIT_TRANSITION_START, anim => { Debug.Log("State idle exit transition started at" + Time.time); });
+        _animator.AddEvent("Idle", AnimationEventType.STATE_END, IdleEnd);
+
+        //otherAnimator.AddEventSMB("PutGlass", AnimationEventType.STATE_END, OtherPutGlassEntered);
 
     }
 
@@ -27,13 +33,18 @@ public class TestAddEvent : MonoBehaviour
             otherAnimator.SetTrigger("TestTrigger");
     }
 
+    void IdleEnd(Animator anim)
+    {
+        Debug.Log("Idle exited on" + gameObject.name + " at " +Time.time );
+    }
+
     void PutGlassEntered(Animator anim)
     {
-        Debug.Log($"Put Glass entered on {gameObject.name}");
+        Debug.Log("Put Glass entered on " + gameObject.name + " at " + Time.time);
     }
 
     void OtherPutGlassEntered(Animator anim)
     {
-        Debug.Log($"Other PutGlass entered on {gameObject.name}");
+        Debug.Log("Other PutGlass exited on " + gameObject.name + " at " + Time.time);
     }
 }
